@@ -18,7 +18,12 @@
 			]
 		}
 	},
-	"runArgs": ["--net=gorgom_network"]
+	"runArgs": ["--net=gorgom_network"],
+	"remoteEnv": {
+		"PGHOST": "172.56.56.100",
+		"PGUSER": "test",
+		"PGPASSWORD": "test"
+	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

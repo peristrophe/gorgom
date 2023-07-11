@@ -12,6 +12,7 @@ run-postgres:
 	docker run --rm \
 	    -e POSTGRES_USER=test \
 		-e POSTGRES_PASSWORD=test \
+		-e POSTGRES_INITDB_ARGS="--encoding=UTF-8 --locale=C" \
 		--net gorgom_network \
 		--ip 172.56.56.100 \
 		-p 5432:5432 \

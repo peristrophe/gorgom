@@ -25,7 +25,6 @@ func (uc *UserController) GetUser(r *GetUserRequest) *GetUserResponse {
 	jst, _ := time.LoadLocation("Asia/Tokyo")
 	now := time.Now().In(jst)
 	user := entity.User{
-		ID:        r.UserID,
 		Name:      "hoge",
 		Birthday:  nil,
 		Location:  nil,

@@ -1,0 +1,20 @@
+version: "3"
+services:
+  db:
+    image: postgres:15.3-bullseye
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_INITDB_ARGS: --encoding=UTF-8 --locale=C
+    networks:
+      compose_nw:
+        ipv4_address: 173.56.56.100
+
+networks:
+  compose_nw:
+    ipam:
+      driver: default
+      config:
+        - subnet: 173.56.56.0/24

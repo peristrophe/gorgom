@@ -5,6 +5,7 @@ RUN set -ex && \
     apt-get install -y --no-install-recommends \
             vim \
             jq \
+            postgresql-client \
             && \
     apt-get upgrade -y && \
     apt-get clean && \

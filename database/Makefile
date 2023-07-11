@@ -1,13 +1,13 @@
-# It expect run on host machine, not DevContainer
 
-.PHONY: prepare run-postgres
+.PHONY: prepare run-postgres init-postgres
 
+# out of dev-container
 prepare:
-ifeq ($(shell docker network ls | grep gorgom_network),)
+ifeq ($(shell which docker && docker network ls | grep gorgom_network),)
 	docker network create --subnet=172.56.56.0/24 gorgom_network
 endif
 
-# for Operation in Dev-Container
+# out of dev-container
 run-postgres:
 	$(MAKE) prepare
 	docker run --rm \
@@ -18,3 +18,6 @@ run-postgres:
 		--ip ${GORGOM_DB_HOST} \
 		-p ${GORGOM_DB_PORT}:${GORGOM_DB_PORT} \
 		postgres:15.3-bullseye
+
+init-postgres:
+	echo $(CURDIR)

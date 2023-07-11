@@ -17,6 +17,7 @@ const (
 type User struct {
 	ID        uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Name      string     `json:"name" gorm:"not null"`
+	Email     *string    `json:"email"`
 	Birthday  *time.Time `json:"birthday"`
 	Location  *string    `json:"location"`
 	Status    UserStatus `json:"status" gorm:"not null"`

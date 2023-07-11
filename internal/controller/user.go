@@ -3,8 +3,6 @@ package controller
 import (
 	"gorgom/internal/entity"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 type UserController struct{}
@@ -12,14 +10,6 @@ type UserController struct{}
 type GetUserRequest struct {
 	UserID string
 }
-
-func NewGetUserRequest(c *gin.Context) *GetUserRequest {
-	uid := c.Param("userID")
-	r := GetUserRequest{UserID: uid}
-	return &r
-}
-
-type GetUserResponse entity.User
 
 func (uc *UserController) GetUser(r *GetUserRequest) *GetUserResponse {
 	jst, _ := time.LoadLocation("Asia/Tokyo")

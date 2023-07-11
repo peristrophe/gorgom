@@ -21,4 +21,6 @@ RUN go install -v golang.org/x/tools/gopls@latest && \
     go install -v github.com/golang/mock/mockgen@v1.6.0
 
 RUN echo "PS1='\[\e[1;33m\]\u@\[\e[m\]\[\e[1;32m\]\h:\[\e[m\]\[\e[1;36m\]\w$ \[\e[m\]'" >> /root/.bashrc && \
-    echo "alias la='ls -lA --color=auto'" >> /root/.bashrc
+    echo "alias la='ls -lA --color=auto'" >> /root/.bashrc && \
+    echo "[dev]\nhost=172.56.56.100\nport=5432\nuser=test\ndbname=gorgom\n" > /root/.pg_service.conf && \
+    echo "[init-dev]\nhost=172.56.56.100\nport=5432\nuser=test\n" >> /root/.pg_service.conf

@@ -17,7 +17,7 @@ endif
 run-postgres:
 	$(MAKE) prepare
 	docker run --rm \
-	    -e POSTGRES_USER=${GORGOM_DB_USER} \
+		-e POSTGRES_USER=${GORGOM_DB_USER} \
 		-e POSTGRES_PASSWORD=${GORGOM_DB_PASSWORD} \
 		-e POSTGRES_INITDB_ARGS="--encoding=UTF-8 --locale=C" \
 		--net gorgom_network \

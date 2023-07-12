@@ -11,5 +11,5 @@ func GetUser(c *gin.Context) {
 	request := controller.NewGetUserRequest(c)
 	uc := controller.UserController{}
 	response := uc.GetUser(request)
-	c.JSON(http.StatusOK, response)
+	c.IndentedJSON(http.StatusOK, response)
 }

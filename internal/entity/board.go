@@ -1,0 +1,16 @@
+package entity
+
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
+type Board struct {
+	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	Title     string    `json:"title" gorm:"not null"`
+	Boxes     []Box     `json:"boxes" gorm:"foreignkey:BoardID"`
+	CreatedAt time.Time `json:"createdAt" gorm:"not null;autoCreateTime"`
+	UpdatedAt time.Time `json:"updatedAt" gorm:"not null;autoUpdateTime"`
+	DeletedAt time.Time `json:"deletedAt" gorm:"default:null"`
+}

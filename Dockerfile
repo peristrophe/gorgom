@@ -1,4 +1,26 @@
-FROM golang:1.20.5-bullseye
+FROM golang:1.20.5-bullseye as base
+
+FROM base as builder
+
+COPY . /prj
+WORKDIR /prj
+
+RUN make build
+
+# ============================== Production stage ==============================
+
+FROM base as production
+
+COPY --from=builder /prj/app /app
+
+RUN useradd peristrophe
+USER peristrophe
+
+ENTRYPOINT ["/app"]
+
+# ============================== Development stage ==============================
+
+FROM base as development
 
 RUN set -ex && \
     apt-get update && \

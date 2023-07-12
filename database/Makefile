@@ -1,4 +1,5 @@
 
+# for development (inside docker network)
 export GORGOM_DB_HOST       := 172.56.56.100
 export GORGOM_DB_PORT       := 5432
 export GORGOM_DB_USER       := test
@@ -14,7 +15,7 @@ ifeq ($(shell which docker && docker network ls | grep gorgom_network),)
 endif
 
 # out of dev-container
-run-postgres:
+postgres-run:
 	$(MAKE) prepare
 	docker run --rm \
 		-e POSTGRES_USER=${GORGOM_DB_USER} \
@@ -25,7 +26,7 @@ run-postgres:
 		-p ${GORGOM_DB_PORT}:${GORGOM_DB_PORT} \
 		postgres:15.3-bullseye
 
-init-postgres:
+postgres-init:
 	-test -f ./init.dcl && psql service=init-dev < ./init.dcl
 	-test -f ./database/init.dcl && psql service=init-dev < ./database/init.dcl
 	-test -f ./init.dcl && go run ../cmd/migrator/migrator.go

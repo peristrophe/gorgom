@@ -17,11 +17,13 @@ const (
 type User struct {
 	ID        uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Name      string     `json:"name" gorm:"not null"`
-	Email     *string    `json:"email"`
-	Birthday  *time.Time `json:"birthday"`
-	Location  *string    `json:"location"`
+	Email     string     `json:"email" gorm:"default:null"`
+	Birthday  time.Time  `json:"birthday" gorm:"default:null"`
+	Location  string     `json:"location" gorm:"default:null"`
 	Status    UserStatus `json:"status" gorm:"not null"`
+	RoleID    uuid.UUID  `json:"roleId"`
+	Role      Role       `json:"role"`
 	CreatedAt time.Time  `json:"createdAt" gorm:"not null;autoCreateTime"`
 	UpdatedAt time.Time  `json:"updatedAt" gorm:"not null;autoUpdateTime"`
-	DeletedAt *time.Time `json:"deletedAt"`
+	DeletedAt time.Time  `json:"deletedAt" gorm:"default:null"`
 }

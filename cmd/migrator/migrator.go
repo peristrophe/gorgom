@@ -12,14 +12,18 @@ func main() {
 		panic(err)
 	}
 
-	db.AutoMigrate(&entity.User{})
-	db.AutoMigrate(&entity.Role{})
-	db.AutoMigrate(&entity.Board{})
-	db.AutoMigrate(&entity.Box{})
-	db.AutoMigrate(&entity.Card{})
-	db.AutoMigrate(&entity.Comment{})
-	db.AutoMigrate(&entity.Tag{})
-	db.AutoMigrate(&entity.CardTag{})
+	db.AutoMigrate(
+		&entity.User{},
+		&entity.Group{},
+		&entity.Role{},
+		&entity.Board{},
+		&entity.Box{},
+		&entity.Card{},
+		&entity.Comment{},
+		&entity.Tag{},
+		&entity.CardTag{},
+		&entity.GroupUser{},
+	)
 
 	roles := []entity.Role{
 		{
@@ -46,6 +50,13 @@ func main() {
 		},
 	}
 	db.Create(&users)
+
+	groups := []entity.Group{{Owner: users[0], Members: users}}
+	db.Create(&groups[0])
+	for _, user := range users {
+		user.Groups = groups
+	}
+	db.Update("Groups", &users)
 
 	tags := []entity.Tag{
 		{Name: "spring"},
@@ -80,6 +91,6 @@ func main() {
 		{Title: "clothes", Cards: cards[1]},
 		{Title: "house", Cards: cards[2]},
 	}
-	board := entity.Board{Title: "life", Boxes: boxes}
+	board := entity.Board{Title: "life", OwnerGroup: groups[0], Boxes: boxes}
 	db.Create(&board)
 }

@@ -23,6 +23,7 @@ type User struct {
 	Status    UserStatus `json:"status" gorm:"not null"`
 	RoleID    uuid.UUID  `json:"roleId"`
 	Role      Role       `json:"role"`
+	Groups    []Group    `json:"groups" gorm:"many2many:group_users"`
 	CreatedAt time.Time  `json:"createdAt" gorm:"not null;autoCreateTime"`
 	UpdatedAt time.Time  `json:"updatedAt" gorm:"not null;autoUpdateTime"`
 	DeletedAt time.Time  `json:"deletedAt" gorm:"default:null"`

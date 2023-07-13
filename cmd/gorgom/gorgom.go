@@ -11,5 +11,7 @@ func main() {
 
 	r.GET("/user/:userID", handler.GetUser)
 
+	r.GET("/board/:boardID", handler.BoardDetail)
+
 	r.Run(":8080")
 }

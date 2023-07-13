@@ -11,7 +11,6 @@ type Card struct {
 	Title       string    `json:"title" gorm:"not null"`
 	Description string    `json:"description"`
 	BoxID       uuid.UUID `json:"boxId"`
-	Box         Box       `json:"box"`
 	Tags        []Tag     `json:"tags" gorm:"many2many:card_tags"`
 	Comments    []Comment `json:"comments" gorm:"foreignkey:CardID"`
 	CreatedAt   time.Time `json:"createdAt" gorm:"not null;autoCreateTime"`

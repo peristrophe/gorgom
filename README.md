@@ -7,6 +7,7 @@ $ go get -u github.com/stretchr/testify
 $ go get -u gorm.io/gorm
 $ go get -u gorm.io/driver/postgres
 $ go get -u github.com/google/uuid
+$ go get -u github.com/golang/mock/gomock
 ```
 
 ## Prepare for development

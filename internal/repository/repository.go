@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=mock -destination=../mock/${GOPACKAGE}_${GOFILE}
 package repository
 
 import (
@@ -16,7 +17,7 @@ type repository struct {
 	DB *gorm.DB
 }
 
-func NewRepository() Repository {
+func NewRepository() *repository {
 	db := GetDBConn()
 	repo := repository{DB: db}
 	return &repo

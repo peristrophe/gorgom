@@ -1,0 +1,28 @@
+name: CI
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+    workflow_dispatch:
+
+jobs:
+    test:
+        name: Test
+        runs-on: ubuntu-22.04
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-go@v4
+              with:
+                  go-version: '1.20'
+            - name: Install mockgen
+              run: |
+                  go install -v github.com/golang/mock/mockgen@v1.6.0
+            - name: Test
+              run: |
+                  echo "machine github.com login ${{ secrets.GORGOM_ACCESS_TOKEN }}" > ~/.netrc
+                  make test TEST_FLAGS="-v -race -covermode=atomic -coverprofile=cover.out"

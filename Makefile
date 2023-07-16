@@ -11,6 +11,13 @@ build:
 migrate:
 	go run cmd/migrator/migrator.go
 
+mock:
+	-rm -rf ./internal/mock
+	go generate ./...
+
+test:
+	go test -v ./...
+
 # out of dev-container
 clear-build-cache:
 	docker builder prune --force

@@ -3,24 +3,14 @@ package main
 import (
 	"gorgom/internal/controller"
 	"gorgom/internal/repository"
-
-	"github.com/gin-gonic/gin"
+	"gorgom/internal/route"
 )
 
 func main() {
-	r := gin.Default()
-
 	repo := repository.NewRepository()
 	ctrl := controller.NewController(repo)
-
-	v1 := r.Group("/v1")
-	{
-		boards := v1.Group("/boards")
-		{
-			//boards.GET("/", ctrl.Boards())
-			boards.GET("/:boardID", ctrl.BoardDetail())
-		}
-	}
+	route := route.NewRoute(ctrl)
+	r := route.Setup()
 
 	r.Run(":8080")
 }

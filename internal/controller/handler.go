@@ -15,7 +15,7 @@ type controller struct {
 	Repo repository.Repository
 }
 
-func NewController(r repository.Repository) Controller {
+func NewController(r repository.Repository) *controller {
 	ctrl := controller{Repo: r}
 	return &ctrl
 }

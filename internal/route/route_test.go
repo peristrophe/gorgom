@@ -53,7 +53,7 @@ func TestRoute_BoardDetail(t *testing.T) {
 
 	r := appRoute.Setup()
 	w := httptest.NewRecorder()
-	endpoint := fmt.Sprintf("/v1/boards/%s", boardID.String())
+	endpoint := fmt.Sprintf("/api/v1/boards/%s", boardID.String())
 	req, _ := http.NewRequest("GET", endpoint, nil)
 	r.ServeHTTP(w, req)
 

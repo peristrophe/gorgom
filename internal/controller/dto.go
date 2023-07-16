@@ -7,34 +7,40 @@ import (
 	"github.com/google/uuid"
 )
 
-type GetUserRequest struct {
+type userProfileRequest struct {
 	UserID uuid.UUID
 }
 
-type GetUserResponse entity.User
+type userProfileResponse entity.User
 
-type BoardDetailRequest struct {
+type boardsRequest struct {
+	GroupID uuid.UUID
+}
+
+type boardsResponse []entity.Board
+
+type boardDetailRequest struct {
 	BoardID uuid.UUID
 }
 
-type BoardDetailResponse entity.Board
+type boardDetailResponse entity.Board
 
-func NewGetUserRequest(c *gin.Context) *GetUserRequest {
+func NewUserProfileRequest(c *gin.Context) *userProfileRequest {
 	userID := c.Param("userID")
 	userUUID, err := uuid.Parse(userID)
 	if err != nil {
 		panic(err)
 	}
-	r := GetUserRequest{UserID: userUUID}
+	r := userProfileRequest{UserID: userUUID}
 	return &r
 }
 
-func NewBoardDetailRequest(c *gin.Context) *BoardDetailRequest {
+func NewBoardDetailRequest(c *gin.Context) *boardDetailRequest {
 	boardID := c.Param("boardID")
 	boardUUID, err := uuid.Parse(boardID)
 	if err != nil {
 		panic(err)
 	}
-	r := BoardDetailRequest{BoardID: boardUUID}
+	r := boardDetailRequest{BoardID: boardUUID}
 	return &r
 }

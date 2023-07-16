@@ -1,7 +1,8 @@
 package main
 
 import (
-	"gorgom/internal/handler"
+	"gorgom/internal/controller"
+	"gorgom/internal/repository"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,9 +10,17 @@ import (
 func main() {
 	r := gin.Default()
 
-	r.GET("/user/:userID", handler.GetUser)
+	repo := repository.NewRepository()
+	ctrl := controller.NewController(repo)
 
-	r.GET("/board/:boardID", handler.BoardDetail)
+	v1 := r.Group("/v1")
+	{
+		boards := v1.Group("/boards")
+		{
+			//boards.GET("/", ctrl.Boards())
+			boards.GET("/:boardID", ctrl.BoardDetail())
+		}
+	}
 
 	r.Run(":8080")
 }

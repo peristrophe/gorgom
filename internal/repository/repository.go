@@ -28,8 +28,6 @@ func (r *repository) BoardByID(boardId uuid.UUID) *entity.Board {
 	r.DB.
 		Preload("Boxes.Cards.Comments").
 		Preload("Boxes.Cards.Tags").
-		Preload("OwnerGroup.Owner.Role").
-		Preload("OwnerGroup.Members.Role").
 		Take(&board, boardId)
 
 	return &board

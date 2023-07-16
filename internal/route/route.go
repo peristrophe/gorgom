@@ -20,7 +20,7 @@ func NewRoute(ctrl controller.Controller) *route {
 func (r *route) Setup() *gin.Engine {
 	gr := gin.Default()
 
-	v1 := gr.Group("/v1")
+	v1 := gr.Group("/api/v1")
 	{
 		boards := v1.Group("/boards")
 		{

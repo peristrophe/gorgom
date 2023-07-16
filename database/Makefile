@@ -6,7 +6,7 @@ export GORGOM_DB_USER       := test
 export GORGOM_DB_PASSWORD   := test
 export GORGOM_DB_NAME       := gorgom
 
-.PHONY: prepare run-postgres init-postgres
+.PHONY: prepare postgres-run postgres-init
 
 # out of dev-container
 prepare:
@@ -27,7 +27,9 @@ postgres-run:
 		postgres:15.3-bullseye
 
 postgres-init:
-	-test -f ./init.dcl && psql service=init-dev < ./init.dcl
-	-test -f ./database/init.dcl && psql service=init-dev < ./database/init.dcl
-	-test -f ./init.dcl && go run ../cmd/migrator/migrator.go
-	-test -f ./database/init.dcl && go run cmd/migrator/migrator.go
+	-test -f ./init.dcl && \
+		psql service=init-dev < ./init.dcl && \
+		go run ../cmd/migrator/migrator.go
+	-test -f ./database/init.dcl && \
+		psql service=init-dev < ./database/init.dcl && \
+		go run cmd/migrator/migrator.go

@@ -25,7 +25,13 @@ func NewRepository() *repository {
 
 func (r *repository) BoardByID(boardId uuid.UUID) *entity.Board {
 	var board entity.Board
-	r.DB.Preload("Boxes.Cards.Comments").Preload("Boxes.Cards.Tags").Preload("OwnerGroup.Owner.Role").Preload("OwnerGroup.Members.Role").Take(&board, boardId)
+	r.DB.
+		Preload("Boxes.Cards.Comments").
+		Preload("Boxes.Cards.Tags").
+		Preload("OwnerGroup.Owner.Role").
+		Preload("OwnerGroup.Members.Role").
+		Take(&board, boardId)
+
 	return &board
 }
 

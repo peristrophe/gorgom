@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"gorgom/internal/setting"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -8,7 +9,7 @@ import (
 )
 
 func GetDBConn() *gorm.DB {
-	dsn := os.ExpandEnv("host=${GORGOM_DB_HOST} user=${GORGOM_DB_USER} password=${GORGOM_DB_PASSWORD} dbname=${GORGOM_DB_NAME} port=${GORGOM_DB_PORT} sslmode=disable TimeZone=Asia/Tokyo")
+	dsn := os.ExpandEnv(setting.POSTGRES_DSN_TEMPLATE)
 	db, err := gorm.Open(postgres.New(postgres.Config{DSN: dsn}), &gorm.Config{})
 	if err != nil {
 		panic(err)

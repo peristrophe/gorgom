@@ -4,16 +4,43 @@ import (
 	"gorgom/internal/entity"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-type GetUserRequest struct {
-	UserID string
+type userProfileRequest struct {
+	UserID uuid.UUID
 }
 
-type GetUserResponse entity.User
+type userProfileResponse entity.User
 
-func NewGetUserRequest(c *gin.Context) *GetUserRequest {
-	uid := c.Param("userID")
-	r := GetUserRequest{UserID: uid}
+type boardsRequest struct {
+	GroupID uuid.UUID
+}
+
+type boardsResponse []entity.Board
+
+type boardDetailRequest struct {
+	BoardID uuid.UUID
+}
+
+type boardDetailResponse entity.Board
+
+func NewUserProfileRequest(c *gin.Context) *userProfileRequest {
+	userID := c.Param("userID")
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		panic(err)
+	}
+	r := userProfileRequest{UserID: userUUID}
+	return &r
+}
+
+func NewBoardDetailRequest(c *gin.Context) *boardDetailRequest {
+	boardID := c.Param("boardID")
+	boardUUID, err := uuid.Parse(boardID)
+	if err != nil {
+		panic(err)
+	}
+	r := boardDetailRequest{BoardID: boardUUID}
 	return &r
 }

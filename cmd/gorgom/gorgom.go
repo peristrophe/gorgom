@@ -1,15 +1,16 @@
 package main
 
 import (
-	"gorgom/internal/handler"
-
-	"github.com/gin-gonic/gin"
+	"gorgom/internal/controller"
+	"gorgom/internal/repository"
+	"gorgom/internal/route"
 )
 
 func main() {
-	r := gin.Default()
-
-	r.GET("/user/:userID", handler.GetUser)
+	repo := repository.NewRepository()
+	ctrl := controller.NewController(repo)
+	route := route.NewRoute(ctrl)
+	r := route.Setup()
 
 	r.Run(":8080")
 }

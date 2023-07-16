@@ -7,10 +7,7 @@ import (
 )
 
 func main() {
-	db, err := repository.GetDBConn()
-	if err != nil {
-		panic(err)
-	}
+	db := repository.GetDBConn()
 
 	db.AutoMigrate(
 		&entity.User{},
@@ -33,7 +30,7 @@ func main() {
 			Name: "kid",
 		},
 	}
-	jst, err := time.LoadLocation("Asia/Tokyo")
+	jst, _ := time.LoadLocation("Asia/Tokyo")
 	users := []entity.User{
 		{
 			Name:     "hoge",
@@ -65,9 +62,9 @@ func main() {
 		{Name: "trip"},
 	}
 	comments := []entity.Comment{
-		{Content: "hello, gorgom!", User: users[0]},
-		{Content: "good evening", User: users[1]},
-		{Content: "my memo", User: users[1]},
+		{Content: "hello, gorgom!", UserID: users[0].ID},
+		{Content: "good evening", UserID: users[1].ID},
+		{Content: "my memo", UserID: users[1].ID},
 	}
 	cards := [][]entity.Card{
 		{

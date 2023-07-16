@@ -1,6 +1,8 @@
 include database/Makefile
 
-.PHONY: run migrate clear-build-cache
+TEST_FLAGS := -v
+
+.PHONY: run migrate mock test clear-build-cache
 
 run:
 	go run cmd/gorgom/gorgom.go
@@ -10,6 +12,14 @@ build:
 
 migrate:
 	go run cmd/migrator/migrator.go
+
+mock:
+	-rm -rf ./internal/mock
+	go generate ./...
+
+test:
+	$(MAKE) mock
+	go test $(TEST_FLAGS) ./...
 
 # out of dev-container
 clear-build-cache:

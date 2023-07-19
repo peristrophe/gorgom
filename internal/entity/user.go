@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"time"
 
 	"github.com/google/uuid"
@@ -14,10 +16,19 @@ const (
 	Sick
 )
 
+type Password string
+
+func (pw *Password) Encrypt() *Password {
+	r := sha256.Sum256([]byte(*pw))
+	crypted := Password(hex.EncodeToString(r[:]))
+	return &crypted
+}
+
 type User struct {
 	ID        uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	Email     string     `json:"email" gorm:"not null"`
+	Password  Password   `json:"-" gorm:"not null"`
 	Name      string     `json:"name" gorm:"not null"`
-	Email     string     `json:"email" gorm:"default:null"`
 	Birthday  time.Time  `json:"birthday" gorm:"default:null"`
 	Location  string     `json:"location" gorm:"default:null"`
 	Status    UserStatus `json:"status" gorm:"not null"`

@@ -28,6 +28,7 @@ type User struct {
 	ID        uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Email     string     `json:"email" gorm:"not null"`
 	Password  Password   `json:"-" gorm:"not null"`
+	Salt      string     `json:"-" gorm:"not null"`
 	Name      string     `json:"name" gorm:"not null"`
 	Birthday  time.Time  `json:"birthday" gorm:"default:null"`
 	Location  string     `json:"location" gorm:"default:null"`

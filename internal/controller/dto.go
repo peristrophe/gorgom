@@ -7,6 +7,16 @@ import (
 	"github.com/google/uuid"
 )
 
+type signUpRequest struct {
+	Email    string
+	Password string
+}
+
+type signInRequest struct {
+	Email    string
+	Password string
+}
+
 type userProfileRequest struct {
 	UserID uuid.UUID
 }

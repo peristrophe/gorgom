@@ -34,7 +34,6 @@ func main() {
 	users := []entity.User{
 		{
 			Email:    "hoge@example.com",
-			Password: entity.Password("hogehoge").Encrypt("salt"),
 			Name:     "hoge",
 			Location: "Tokyo",
 			Status:   entity.Free,
@@ -54,8 +53,8 @@ func main() {
 	db.Create(&groups[0])
 	for _, user := range users {
 		pw := user.Name + user.Name
-		hash := entity.Password(pw).Encrypt(user.ID.String())
-		db.Model(&user).Updates(entity.User{Password: hash, Groups: groups})
+		user.SetPassword(pw)
+		db.Model(&user).Updates(entity.User{Groups: groups, Password: user.Password})
 	}
 
 	tags := []entity.Tag{

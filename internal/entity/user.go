@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/pbkdf2"
 )
 
 type UserStatus int
@@ -18,17 +19,18 @@ const (
 
 type Password string
 
-func (pw *Password) Encrypt() *Password {
-	r := sha256.Sum256([]byte(*pw))
-	crypted := Password(hex.EncodeToString(r[:]))
-	return &crypted
+func (pw Password) Encrypt(salt string) Password {
+	pwBytes := []byte(pw)
+	saltBytes := []byte(salt)
+	cryptedBytes := pbkdf2.Key(pwBytes, saltBytes, 4096, 32, sha256.New)
+	crypted := Password(hex.EncodeToString(cryptedBytes))
+	return crypted
 }
 
 type User struct {
 	ID        uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Email     string     `json:"email" gorm:"not null"`
 	Password  Password   `json:"-" gorm:"not null"`
-	Salt      string     `json:"-" gorm:"not null"`
 	Name      string     `json:"name" gorm:"not null"`
 	Birthday  time.Time  `json:"birthday" gorm:"default:null"`
 	Location  string     `json:"location" gorm:"default:null"`

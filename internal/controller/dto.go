@@ -12,6 +12,11 @@ type signUpRequest struct {
 	Password string
 }
 
+type signUpResponse struct {
+	UserID uuid.UUID `json:"userID"`
+	Token  string    `json:"token"`
+}
+
 type signInRequest struct {
 	Email    string
 	Password string

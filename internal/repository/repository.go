@@ -9,7 +9,7 @@ import (
 )
 
 type Repository interface {
-	CreateUser(string, string) error
+	CreateUser(string, string) (*entity.User, error)
 	Authentication(string, string) (*string, error)
 	BoardByID(uuid.UUID) *entity.Board
 	BoardsByGroupID(uuid.UUID) []*entity.Board
@@ -25,30 +25,38 @@ func NewRepository() *repository {
 	return &repo
 }
 
-func (r *repository) CreateUser(email string, password string) error {
+func (r *repository) CreateUser(email string, password string) (*entity.User, error) {
 	tx := r.DB.Begin()
 
-	user := entity.User{Email: email}
-	result := tx.Create(&user)
+	var initialRole entity.Role
+	result := tx.First(&initialRole)
 	if result.Error != nil {
 		tx.Rollback()
-		return result.Error
+		return nil, result.Error
+	}
+
+	user := entity.User{Email: email, Role: initialRole}
+	result = tx.Create(&user)
+	if result.Error != nil {
+		tx.Rollback()
+		return nil, result.Error
 	}
 
 	err := user.SetPassword(password)
 	if err != nil {
 		tx.Rollback()
-		return err
+		return nil, err
 	}
 
-	result = tx.Update("Password", &user)
+	//result = tx.Update("Password", &user)
+	result = tx.Model(&user).Updates(entity.User{Password: user.Password})
 	if result.Error != nil {
 		tx.Rollback()
-		return result.Error
+		return nil, result.Error
 	}
 
 	tx.Commit()
-	return nil
+	return &user, nil
 }
 
 func (r *repository) Authentication(email string, password string) (*string, error) {

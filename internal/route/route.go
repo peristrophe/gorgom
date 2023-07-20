@@ -22,6 +22,9 @@ func (r *route) Setup() *gin.Engine {
 
 	v1 := gr.Group("/api/v1")
 	{
+		v1.POST("/signup", r.Ctrl.SignUp())
+	}
+	{
 		boards := v1.Group("/boards")
 		{
 			//boards.GET("/", ctrl.Boards())

@@ -31,7 +31,7 @@ func (pw password) Encrypt(salt string) password {
 
 type User struct {
 	ID        uuid.UUID  `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
-	Email     string     `json:"email" gorm:"not null"`
+	Email     string     `json:"email" gorm:"not null;unique"`
 	Password  password   `json:"-"`
 	Salt      uuid.UUID  `json:"-" gorm:"type:uuid;default:uuid_generate_v4();unique"`
 	Name      string     `json:"name" gorm:"not null"`

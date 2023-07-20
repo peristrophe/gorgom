@@ -10,7 +10,7 @@ import (
 
 type Repository interface {
 	CreateUser(string, string) error
-	Authentication(string, string) (string, error)
+	Authentication(string, string) (*string, error)
 	BoardByID(uuid.UUID) *entity.Board
 	BoardsByGroupID(uuid.UUID) []*entity.Board
 }
@@ -51,7 +51,7 @@ func (r *repository) CreateUser(email string, password string) error {
 	return nil
 }
 
-func (r *repository) Authentication(email string, password string) (string, error) {
+func (r *repository) Authentication(email string, password string) (*string, error) {
 	var user entity.User
 	result := r.DB.Where("email = ?", email).First(&user)
 	if result.Error != nil {
@@ -62,7 +62,7 @@ func (r *repository) Authentication(email string, password string) (string, erro
 		return nil, err
 	}
 	token := "TOKEN"
-	return token, nil
+	return &token, nil
 }
 
 func (r *repository) BoardByID(boardId uuid.UUID) *entity.Board {

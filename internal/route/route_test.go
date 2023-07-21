@@ -177,7 +177,7 @@ func TestRoute_BoardDetail(t *testing.T) {
 	appCtrl := controller.NewController(mockRepo)
 	appRoute := NewRoute(appCtrl)
 
-	tokenStr, err := util.GenerateToken("foo")
+	token := util.NewJWT("foo")
 	if err != nil {
 		panic(err)
 	}
@@ -186,7 +186,7 @@ func TestRoute_BoardDetail(t *testing.T) {
 	w := httptest.NewRecorder()
 	endpoint := fmt.Sprintf("/api/v1/boards/%s", boardID.String())
 	req, _ := http.NewRequest("GET", endpoint, nil)
-	req.AddCookie(&http.Cookie{Name: "token", Value: tokenStr})
+	req.AddCookie(&http.Cookie{Name: "token", Value: string(*token)})
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)

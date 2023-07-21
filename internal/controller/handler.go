@@ -45,7 +45,7 @@ func (ctrl *controller) SignUp() func(*gin.Context) {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 
-		c.SetCookie("token", string(*token), setting.TOKEN_EXPIRE*3600, "/", "localhost", false, true)
+		c.SetCookie("token", string(*token), setting.TOKEN_EXPIRE*3600, "/", setting.APP_HOST, false, true)
 		response := signUpResponse{UserID: user.ID, Token: token}
 		c.IndentedJSON(http.StatusOK, response)
 	}
@@ -68,7 +68,7 @@ func (ctrl *controller) SignIn() func(*gin.Context) {
 		}
 
 		token := util.NewJWT(user.ID.String())
-		c.SetCookie("token", string(*token), setting.TOKEN_EXPIRE*3600, "/", "localhost", false, true)
+		c.SetCookie("token", string(*token), setting.TOKEN_EXPIRE*3600, "/", setting.APP_HOST, false, true)
 		response := signInResponse{UserID: user.ID, Token: token}
 		c.JSON(http.StatusOK, response)
 	}

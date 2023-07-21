@@ -47,8 +47,8 @@ type User struct {
 }
 
 func (u *User) SetPassword(pw string) error {
-	if u.ID == uuid.Nil {
-		return fmt.Errorf("No ID assigned yet.")
+	if u.Salt == uuid.Nil {
+		return fmt.Errorf("Salt not created yet.")
 	}
 	u.Password = password(pw).Encrypt(u.Salt.String())
 	return nil

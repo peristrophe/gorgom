@@ -10,7 +10,7 @@ import (
 
 type Repository interface {
 	CreateUser(string, string) (*entity.User, error)
-	Authentication(string, string) (*string, error)
+	GetUserByEmail(string) (*entity.User, error)
 	BoardByID(uuid.UUID) *entity.Board
 	BoardsByGroupID(uuid.UUID) []*entity.Board
 }
@@ -48,7 +48,6 @@ func (r *repository) CreateUser(email string, password string) (*entity.User, er
 		return nil, err
 	}
 
-	//result = tx.Update("Password", &user)
 	result = tx.Model(&user).Updates(entity.User{Password: user.Password})
 	if result.Error != nil {
 		tx.Rollback()
@@ -59,18 +58,13 @@ func (r *repository) CreateUser(email string, password string) (*entity.User, er
 	return &user, nil
 }
 
-func (r *repository) Authentication(email string, password string) (*string, error) {
+func (r *repository) GetUserByEmail(email string) (*entity.User, error) {
 	var user entity.User
 	result := r.DB.Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	err := user.Authentication(password)
-	if err != nil {
-		return nil, err
-	}
-	token := "TOKEN"
-	return &token, nil
+	return &user, nil
 }
 
 func (r *repository) BoardByID(boardId uuid.UUID) *entity.Board {

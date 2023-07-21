@@ -2,6 +2,7 @@ package route
 
 import (
 	"gorgom/internal/controller"
+	"gorgom/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,9 +24,11 @@ func (r *route) Setup() *gin.Engine {
 	v1 := gr.Group("/api/v1")
 	{
 		v1.POST("/signup", r.Ctrl.SignUp())
+		v1.POST("/signin", r.Ctrl.SignIn())
 	}
 	{
 		boards := v1.Group("/boards")
+		boards.Use(middleware.AuthMiddleware)
 		{
 			//boards.GET("/", ctrl.Boards())
 			boards.GET("/:boardID", r.Ctrl.BoardDetail())

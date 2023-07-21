@@ -2,10 +2,31 @@ package controller
 
 import (
 	"gorgom/internal/entity"
+	"gorgom/internal/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+type signUpRequest struct {
+	Email    string
+	Password string
+}
+
+type signUpResponse struct {
+	UserID uuid.UUID `json:"userID"`
+	Token  *util.JWT `json:"token"`
+}
+
+type signInRequest struct {
+	Email    string
+	Password string
+}
+
+type signInResponse struct {
+	UserID uuid.UUID `json:userID`
+	Token  *util.JWT `json:token`
+}
 
 type userProfileRequest struct {
 	UserID uuid.UUID

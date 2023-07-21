@@ -9,6 +9,8 @@ import (
 )
 
 type Repository interface {
+	CreateUser(string, string) (*entity.User, error)
+	GetUserByEmail(string) (*entity.User, error)
 	BoardByID(uuid.UUID) *entity.Board
 	BoardsByGroupID(uuid.UUID) []*entity.Board
 }
@@ -21,6 +23,48 @@ func NewRepository() *repository {
 	db := GetDBConn()
 	repo := repository{DB: db}
 	return &repo
+}
+
+func (r *repository) CreateUser(email string, password string) (*entity.User, error) {
+	tx := r.DB.Begin()
+
+	var initialRole entity.Role
+	result := tx.First(&initialRole)
+	if result.Error != nil {
+		tx.Rollback()
+		return nil, result.Error
+	}
+
+	user := entity.User{Email: email, Role: initialRole}
+	result = tx.Create(&user)
+	if result.Error != nil {
+		tx.Rollback()
+		return nil, result.Error
+	}
+
+	err := user.SetPassword(password)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	result = tx.Model(&user).Updates(entity.User{Password: user.Password})
+	if result.Error != nil {
+		tx.Rollback()
+		return nil, result.Error
+	}
+
+	tx.Commit()
+	return &user, nil
+}
+
+func (r *repository) GetUserByEmail(email string) (*entity.User, error) {
+	var user entity.User
+	result := r.DB.Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
 }
 
 func (r *repository) BoardByID(boardId uuid.UUID) *entity.Board {

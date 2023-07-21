@@ -22,6 +22,9 @@ ENTRYPOINT ["/app"]
 
 FROM base as development
 
+ENV TOKEN_SECRET_KEY   2QqMv3rANCWH+NxVpGbesdVVIbJUeaT+a8K4lMucBVo=
+ENV APP_HOST           localhost
+
 RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \

@@ -24,26 +24,32 @@ func main() {
 
 	roles := []entity.Role{
 		{
-			Name: "mother",
+			Name: "Nothing",
 		},
 		{
-			Name: "kid",
+			Name: "Mother",
+		},
+		{
+			Name: "Kid",
 		},
 	}
+	db.Create(&roles)
+
 	jst, _ := time.LoadLocation("Asia/Tokyo")
 	users := []entity.User{
 		{
+			Email:    "hoge@example.com",
 			Name:     "hoge",
 			Location: "Tokyo",
 			Status:   entity.Free,
-			Role:     roles[0],
+			Role:     roles[1],
 		},
 		{
-			Name:     "fuga",
 			Email:    "fuga@example.com",
+			Name:     "fuga",
 			Birthday: time.Date(2020, 2, 22, 0, 0, 0, 0, jst),
 			Status:   entity.Sick,
-			Role:     roles[1],
+			Role:     roles[2],
 		},
 	}
 	db.Create(&users)
@@ -51,9 +57,10 @@ func main() {
 	groups := []entity.Group{{Owner: users[0], Members: users}}
 	db.Create(&groups[0])
 	for _, user := range users {
-		user.Groups = groups
+		pw := user.Name + user.Name
+		user.SetPassword(pw)
+		db.Model(&user).Updates(entity.User{Groups: groups, Password: user.Password})
 	}
-	db.Update("Groups", &users)
 
 	tags := []entity.Tag{
 		{Name: "spring"},

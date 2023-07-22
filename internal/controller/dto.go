@@ -34,9 +34,9 @@ type userProfileRequest struct {
 
 type userProfileResponse entity.User
 
-type boardsRequest struct {
-	GroupID uuid.UUID
-}
+//type boardsRequest struct {
+//	GroupID uuid.UUID
+//}
 
 type boardsResponse []entity.Board
 

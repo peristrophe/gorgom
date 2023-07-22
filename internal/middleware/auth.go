@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const CONTEXT_PARAM_KEY_AUTH_USER_ID = "AuthorizedUserID"
+
 func AuthMiddleware(c *gin.Context) {
 	tokenStr, err := c.Cookie("token")
 	if err != nil {
@@ -23,6 +25,6 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	c.AddParam("tokenUserID", userID)
+	c.AddParam(CONTEXT_PARAM_KEY_AUTH_USER_ID, userID)
 	c.Next()
 }

@@ -5,25 +5,7 @@ import (
 	"gorgom/internal/entity"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
-
-type Repository interface {
-	CreateUser(string, string) (*entity.User, error)
-	GetUserByEmail(string) (*entity.User, error)
-	BoardByID(uuid.UUID) *entity.Board
-	BoardsByGroupID(uuid.UUID) []*entity.Board
-}
-
-type repository struct {
-	DB *gorm.DB
-}
-
-func NewRepository() *repository {
-	db := GetDBConn()
-	repo := repository{DB: db}
-	return &repo
-}
 
 func (r *repository) CreateUser(email string, password string) (*entity.User, error) {
 	tx := r.DB.Begin()
@@ -58,25 +40,25 @@ func (r *repository) CreateUser(email string, password string) (*entity.User, er
 	return &user, nil
 }
 
-func (r *repository) GetUserByEmail(email string) (*entity.User, error) {
+func (r *repository) GetUserByID(userID uuid.UUID) (*entity.User, error) {
 	var user entity.User
-	result := r.DB.Where("email = ?", email).First(&user)
+	result := r.DB.
+		Preload("Groups").
+		Preload("Role").
+		Take(&user, userID)
+
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return &user, nil
 }
 
-func (r *repository) BoardByID(boardId uuid.UUID) *entity.Board {
-	var board entity.Board
-	r.DB.
-		Preload("Boxes.Cards.Comments").
-		Preload("Boxes.Cards.Tags").
-		Take(&board, boardId)
+func (r *repository) GetUserByEmail(email string) (*entity.User, error) {
+	var user entity.User
+	result := r.DB.Where("email = ?", email).First(&user)
 
-	return &board
-}
-
-func (r *repository) BoardsByGroupID(groupId uuid.UUID) []*entity.Board {
-	return nil
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
 }

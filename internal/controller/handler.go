@@ -1,19 +1,23 @@
 package controller
 
 import (
-	"fmt"
+	"gorgom/internal/entity"
+	"gorgom/internal/middleware"
 	"gorgom/internal/repository"
 	"gorgom/internal/setting"
 	"gorgom/internal/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"golang.org/x/exp/slices"
 )
 
 type Controller interface {
 	SignUp() func(*gin.Context)
 	SignIn() func(*gin.Context)
 	BoardDetail() func(*gin.Context)
+	Boards() func(*gin.Context)
 }
 
 type controller struct {
@@ -23,6 +27,19 @@ type controller struct {
 func NewController(r repository.Repository) *controller {
 	ctrl := controller{Repo: r}
 	return &ctrl
+}
+
+func (ctrl *controller) getAuthorizedUser(c *gin.Context) (*entity.User, error) {
+	userID, err := uuid.Parse(c.Param(middleware.CONTEXT_PARAM_KEY_AUTH_USER_ID))
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := ctrl.Repo.GetUserByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (ctrl *controller) SignUp() func(*gin.Context) {
@@ -39,7 +56,6 @@ func (ctrl *controller) SignUp() func(*gin.Context) {
 			panic(err)
 		}
 
-		//token, err := util.GenerateToken(user.ID.String())
 		token := util.NewJWT(user.ID.String())
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -70,20 +86,54 @@ func (ctrl *controller) SignIn() func(*gin.Context) {
 		token := util.NewJWT(user.ID.String())
 		c.SetCookie("token", string(*token), setting.TOKEN_EXPIRE*3600, "/", setting.APP_HOST, false, true)
 		response := signInResponse{UserID: user.ID, Token: token}
-		c.JSON(http.StatusOK, response)
+		c.IndentedJSON(http.StatusOK, response)
 	}
 }
 
 func (ctrl *controller) BoardDetail() func(*gin.Context) {
 	return func(c *gin.Context) {
-		// TODO permission control
-		var uid string
-		uid = c.Param("tokenUserID")
-		fmt.Println(uid)
-
 		request := NewBoardDetailRequest(c)
-		board := ctrl.Repo.BoardByID(request.BoardID)
+
+		user, err := ctrl.getAuthorizedUser(c)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+
+		board, err := ctrl.Repo.GetBoardByID(request.BoardID)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+
+		var groupIDs []uuid.UUID
+		for _, group := range user.Groups {
+			groupIDs = append(groupIDs, group.ID)
+		}
+		if !slices.Contains(groupIDs, board.OwnerGroupID) {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "board not found."})
+		}
+
 		response := boardDetailResponse(*board)
 		c.IndentedJSON(http.StatusOK, &response)
+	}
+}
+
+func (ctrl *controller) Boards() func(*gin.Context) {
+	return func(c *gin.Context) {
+		user, err := ctrl.getAuthorizedUser(c)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+
+		var allBoards []entity.Board
+		for _, group := range user.Groups {
+			boards, err := ctrl.Repo.ListBoardsByGroupID(group.ID)
+			if err != nil {
+				c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			}
+			allBoards = append(allBoards, boards...)
+		}
+
+		response := boardsResponse(allBoards)
+		c.IndentedJSON(http.StatusOK, response)
 	}
 }

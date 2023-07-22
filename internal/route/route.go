@@ -30,7 +30,7 @@ func (r *route) Setup() *gin.Engine {
 		boards := v1.Group("/boards")
 		boards.Use(middleware.AuthMiddleware)
 		{
-			//boards.GET("/", ctrl.Boards())
+			boards.GET("/", r.Ctrl.Boards())
 			boards.GET("/:boardID", r.Ctrl.BoardDetail())
 		}
 	}

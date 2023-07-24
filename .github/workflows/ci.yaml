@@ -19,9 +19,10 @@ jobs:
             - uses: actions/setup-go@v4
               with:
                   go-version: '1.20'
-            - name: Install mockgen
+            - name: Install artifacts
               run: |
                   go install -v github.com/golang/mock/mockgen@v1.6.0
+                  go install github.com/mattn/goveralls@latest
             - name: Test
               env:
                 TOKEN_SECRET_KEY: ${{ secrets.TEST_JWT_SECRET_KEY }}
@@ -30,6 +31,6 @@ jobs:
                   echo "machine github.com login ${{ secrets.GORGOM_ACCESS_TOKEN }}" > ~/.netrc
                   make test TEST_FLAGS="-v -race -covermode=atomic -coverprofile=cover.out"
             - name: Report coverage
-              uses: coverallsapp/github-action@v2
-              with:
-                file: cover.out
+              env:
+                COVERALLS_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+              run: goveralls -coverprofile=cover.out -service=github

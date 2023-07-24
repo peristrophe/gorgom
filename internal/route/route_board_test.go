@@ -42,18 +42,9 @@ func TestRoute_BoardDetail(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	date := time.Date(2023, 7, 16, 0, 0, 0, 0, time.UTC)
-	boardID, err := uuid.Parse("9a42b6f1-237d-11ee-8a00-0242ac383802")
-	if err != nil {
-		panic(err)
-	}
-	groupID, err := uuid.Parse("4e4d3517-237e-11ee-b7fd-0242ac383802")
-	if err != nil {
-		panic(err)
-	}
-	userID, err := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
-	if err != nil {
-		panic(err)
-	}
+	boardID, _ := uuid.Parse("9a42b6f1-237d-11ee-8a00-0242ac383802")
+	groupID, _ := uuid.Parse("4e4d3517-237e-11ee-b7fd-0242ac383802")
+	userID, _ := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
 	boardStub := entity.Board{
 		ID:           boardID,
 		Title:        "hoge",
@@ -114,18 +105,9 @@ func TestRoute_Boards(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	date := time.Date(2023, 7, 16, 0, 0, 0, 0, time.UTC)
-	boardID, err := uuid.Parse("9a42b6f1-237d-11ee-8a00-0242ac383802")
-	if err != nil {
-		panic(err)
-	}
-	groupID, err := uuid.Parse("4e4d3517-237e-11ee-b7fd-0242ac383802")
-	if err != nil {
-		panic(err)
-	}
-	userID, err := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
-	if err != nil {
-		panic(err)
-	}
+	boardID, _ := uuid.Parse("9a42b6f1-237d-11ee-8a00-0242ac383802")
+	groupID, _ := uuid.Parse("4e4d3517-237e-11ee-b7fd-0242ac383802")
+	userID, _ := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
 	board := entity.Board{
 		ID:           boardID,
 		Title:        "hoge",

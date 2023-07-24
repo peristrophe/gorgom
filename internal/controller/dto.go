@@ -24,8 +24,8 @@ type signInRequest struct {
 }
 
 type signInResponse struct {
-	UserID uuid.UUID `json:userID`
-	Token  *util.JWT `json:token`
+	UserID uuid.UUID `json:"userID"`
+	Token  *util.JWT `json:"token"`
 }
 
 type userProfileRequest struct {

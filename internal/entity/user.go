@@ -61,3 +61,14 @@ func (u *User) Authentication(pw string) error {
 	}
 	return fmt.Errorf("Authentication failed.")
 }
+
+func (u *User) ListGroupIDs() []uuid.UUID {
+	groupIDs := make([]uuid.UUID, 0)
+	if u.Groups == nil {
+		return groupIDs
+	}
+	for _, group := range u.Groups {
+		groupIDs = append(groupIDs, group.ID)
+	}
+	return groupIDs
+}

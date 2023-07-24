@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
 )
 
@@ -22,11 +21,7 @@ func (ctrl *controller) CardDetail() func(*gin.Context) {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 
-		var groupIDs []uuid.UUID
-		for _, group := range user.Groups {
-			groupIDs = append(groupIDs, group.ID)
-		}
-		if !slices.Contains(groupIDs, card.Box.Board.OwnerGroupID) {
+		if !slices.Contains(user.ListGroupIDs(), card.Box.Board.OwnerGroupID) {
 			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "card not found."})
 		}
 

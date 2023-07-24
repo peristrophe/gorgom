@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
 )
 
@@ -23,11 +22,7 @@ func (ctrl *controller) BoardDetail() func(*gin.Context) {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 
-		var groupIDs []uuid.UUID
-		for _, group := range user.Groups {
-			groupIDs = append(groupIDs, group.ID)
-		}
-		if !slices.Contains(groupIDs, board.OwnerGroupID) {
+		if !slices.Contains(user.ListGroupIDs(), board.OwnerGroupID) {
 			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "board not found."})
 		}
 

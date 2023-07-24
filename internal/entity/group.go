@@ -8,6 +8,7 @@ import (
 
 type Group struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	Name      string    `json:"name"`
 	OwnerID   uuid.UUID `json:"ownerId"`
 	Owner     User      `json:"-"`
 	Members   []User    `json:"members" gorm:"many2many:group_users"`

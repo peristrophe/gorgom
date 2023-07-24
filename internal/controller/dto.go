@@ -46,6 +46,12 @@ type boardDetailRequest struct {
 
 type boardDetailResponse entity.Board
 
+type cardDetailRequest struct {
+	CardID uuid.UUID
+}
+
+type cardDetailResponse entity.Card
+
 func NewUserProfileRequest(c *gin.Context) *userProfileRequest {
 	userID := c.Param("userID")
 	userUUID, err := uuid.Parse(userID)
@@ -63,5 +69,15 @@ func NewBoardDetailRequest(c *gin.Context) *boardDetailRequest {
 		panic(err)
 	}
 	r := boardDetailRequest{BoardID: boardUUID}
+	return &r
+}
+
+func NewCardDetailRequest(c *gin.Context) *cardDetailRequest {
+	cardID := c.Param("cardID")
+	cardUUID, err := uuid.Parse(cardID)
+	if err != nil {
+		panic(err)
+	}
+	r := cardDetailRequest{CardID: cardUUID}
 	return &r
 }

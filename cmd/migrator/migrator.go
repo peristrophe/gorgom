@@ -54,7 +54,7 @@ func main() {
 	}
 	db.Create(&users)
 
-	groups := []entity.Group{{Owner: users[0], Members: users}}
+	groups := []entity.Group{{Name: "hogefuga family", Owner: users[0], Members: users}}
 	db.Create(&groups[0])
 	for _, user := range users {
 		pw := user.Name + user.Name

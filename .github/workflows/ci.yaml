@@ -31,4 +31,5 @@ jobs:
                   make test TEST_FLAGS="-v -race -covermode=atomic -coverprofile=cover.out"
             - name: Report coverage
               uses: coverallsapp/github-action@v2
-              file: cover.out
+              with:
+                file: cover.out

@@ -15,6 +15,8 @@ type Repository interface {
 
 	GetBoardByID(uuid.UUID) (*entity.Board, error)
 	ListBoardsByGroupID(uuid.UUID) ([]entity.Board, error)
+
+	GetCardByID(uuid.UUID) (*entity.Card, error)
 }
 
 type repository struct {

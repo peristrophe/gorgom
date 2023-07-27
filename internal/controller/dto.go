@@ -28,11 +28,11 @@ type signInResponse struct {
 	Token  *util.JWT `json:"token"`
 }
 
-type userProfileRequest struct {
-	UserID uuid.UUID
-}
+//type myPageRequest struct {
+//	UserID uuid.UUID
+//}
 
-type userProfileResponse entity.User
+type myPageResponse entity.User
 
 //type boardsRequest struct {
 //	GroupID uuid.UUID
@@ -51,16 +51,6 @@ type cardDetailRequest struct {
 }
 
 type cardDetailResponse entity.Card
-
-func NewUserProfileRequest(c *gin.Context) *userProfileRequest {
-	userID := c.Param("userID")
-	userUUID, err := uuid.Parse(userID)
-	if err != nil {
-		panic(err)
-	}
-	r := userProfileRequest{UserID: userUUID}
-	return &r
-}
 
 func NewBoardDetailRequest(c *gin.Context) *boardDetailRequest {
 	boardID := c.Param("boardID")

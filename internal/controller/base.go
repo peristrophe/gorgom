@@ -12,8 +12,11 @@ import (
 type Controller interface {
 	SignUp() func(*gin.Context)
 	SignIn() func(*gin.Context)
+	MyPage() func(*gin.Context)
+
 	BoardDetail() func(*gin.Context)
 	Boards() func(*gin.Context)
+
 	CardDetail() func(*gin.Context)
 }
 

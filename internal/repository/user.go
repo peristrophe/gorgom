@@ -10,15 +10,8 @@ import (
 func (r *repository) CreateUser(email string, password string) (*entity.User, error) {
 	tx := r.DB.Begin()
 
-	var initialRole entity.Role
-	result := tx.First(&initialRole)
-	if result.Error != nil {
-		tx.Rollback()
-		return nil, result.Error
-	}
-
-	user := entity.User{Email: email, Role: initialRole}
-	result = tx.Create(&user)
+	user := entity.User{Email: email}
+	result := tx.Create(&user)
 	if result.Error != nil {
 		tx.Rollback()
 		return nil, result.Error
@@ -44,7 +37,6 @@ func (r *repository) GetUserByID(userID uuid.UUID) (*entity.User, error) {
 	var user entity.User
 	result := r.DB.
 		Preload("Groups").
-		Preload("Role").
 		Take(&user, userID)
 
 	if result.Error != nil {

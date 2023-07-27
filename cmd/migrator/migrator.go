@@ -12,7 +12,6 @@ func main() {
 	db.AutoMigrate(
 		&entity.User{},
 		&entity.Group{},
-		&entity.Role{},
 		&entity.Board{},
 		&entity.Box{},
 		&entity.Card{},
@@ -22,19 +21,6 @@ func main() {
 		&entity.GroupUser{},
 	)
 
-	roles := []entity.Role{
-		{
-			Name: "Nothing",
-		},
-		{
-			Name: "Mother",
-		},
-		{
-			Name: "Kid",
-		},
-	}
-	db.Create(&roles)
-
 	jst, _ := time.LoadLocation("Asia/Tokyo")
 	users := []entity.User{
 		{
@@ -42,14 +28,12 @@ func main() {
 			Name:     "hoge",
 			Location: "Tokyo",
 			Status:   entity.Free,
-			Role:     roles[1],
 		},
 		{
 			Email:    "fuga@example.com",
 			Name:     "fuga",
 			Birthday: time.Date(2020, 2, 22, 0, 0, 0, 0, jst),
 			Status:   entity.Sick,
-			Role:     roles[2],
 		},
 	}
 	db.Create(&users)

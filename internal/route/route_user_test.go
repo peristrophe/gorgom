@@ -29,6 +29,7 @@ const MYPAGE_EXPECT_BODY = `{
             "name": "",
             "ownerId": "00000000-0000-0000-0000-000000000000",
             "members": null,
+            "roles": null,
             "createdAt": "0001-01-01T00:00:00Z",
             "updatedAt": "0001-01-01T00:00:00Z"
         }

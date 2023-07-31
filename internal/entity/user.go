@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/pbkdf2"
+	"golang.org/x/exp/slices"
 )
 
 type UserStatus int
@@ -70,4 +71,13 @@ func (u *User) ListGroupIDs() []uuid.UUID {
 		groupIDs = append(groupIDs, group.ID)
 	}
 	return groupIDs
+}
+
+func (u *User) IsValid() bool {
+	for _, role := range u.Roles {
+		if !slices.Contains(u.ListGroupIDs(), role.GroupID) {
+			return false
+		}
+	}
+	return true
 }

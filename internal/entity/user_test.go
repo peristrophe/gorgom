@@ -55,3 +55,21 @@ func TestUser_ListGroupIDs(t *testing.T) {
 	groupIDs := []uuid.UUID{groupID1, groupID2, groupID3}
 	assert.Equal(t, groupIDs, user.ListGroupIDs())
 }
+
+func TestUser_IsValid(t *testing.T) {
+	groupID, _ := uuid.Parse("21f9a09c-b2b5-48cd-b700-80c91b819af9")
+	roleID, _ := uuid.Parse("5f411621-ddd3-4568-a9cb-a6d4e54f6ade")
+	otherGroupID, _ := uuid.Parse("b69a00d5-54b0-4f41-874d-47e4cbde0256")
+
+	group := Group{ID: groupID}
+	role := Role{ID: roleID, GroupID: groupID}
+	user := User{
+		Email:  "hoge@example.com",
+		Groups: []Group{group},
+		Roles:  []Role{role},
+	}
+	assert.True(t, user.IsValid())
+
+	user.Roles[0].GroupID = otherGroupID
+	assert.False(t, user.IsValid())
+}

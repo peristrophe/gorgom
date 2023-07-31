@@ -37,7 +37,7 @@ func (r *repository) CreateUser(email string, password string) (*entity.User, er
 func (r *repository) GetUserByID(userID uuid.UUID) (*entity.User, error) {
 	var user entity.User
 	result := r.DB.
-		Preload("Groups").
+		Preload("Groups.Roles").
 		Preload("Roles").
 		Take(&user, userID)
 

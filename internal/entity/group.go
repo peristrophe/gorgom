@@ -12,6 +12,7 @@ type Group struct {
 	OwnerID   uuid.UUID `json:"ownerId"`
 	Owner     User      `json:"-"`
 	Members   []User    `json:"members" gorm:"many2many:group_users"`
+	Roles     []Role    `json:"roles" gorm:"foreignkey:GroupID"`
 	CreatedAt time.Time `json:"createdAt" gorm:"not null;autoCreateTime"`
 	UpdatedAt time.Time `json:"updatedAt" gorm:"not null;autoUpdateTime"`
 	DeletedAt time.Time `json:"-" gorm:"default:null"`

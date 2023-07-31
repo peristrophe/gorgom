@@ -12,6 +12,7 @@ func main() {
 	db.AutoMigrate(
 		&entity.User{},
 		&entity.Group{},
+		&entity.Role{},
 		&entity.Board{},
 		&entity.Box{},
 		&entity.Card{},
@@ -39,11 +40,29 @@ func main() {
 	db.Create(&users)
 
 	groups := []entity.Group{{Name: "hogefuga family", Owner: users[0], Members: users}}
-	db.Create(&groups[0])
+	db.Create(&groups)
+
+	roles := []entity.Role{
+		{
+			Name:    "Mother",
+			GroupID: groups[0].ID,
+			Users:   []entity.User{users[0]},
+		},
+		{
+			Name:    "Son",
+			GroupID: groups[0].ID,
+			Users:   []entity.User{users[1]},
+		},
+	}
+	db.Create(&roles)
+
 	for _, user := range users {
 		pw := user.Name + user.Name
 		user.SetPassword(pw)
-		db.Model(&user).Updates(entity.User{Groups: groups, Password: user.Password})
+		//rolesField := make([]entity.Role, 0)
+		//rolesField = append(rolesField, roles[i])
+		//db.Model(&user).Updates(entity.User{Password: user.Password, Groups: groups, Roles: rolesField})
+		db.Model(&user).Updates(entity.User{Password: user.Password})
 	}
 
 	tags := []entity.Tag{

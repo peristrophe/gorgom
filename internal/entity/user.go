@@ -39,6 +39,7 @@ type User struct {
 	Location  string     `json:"location" gorm:"default:null"`
 	Status    UserStatus `json:"status" gorm:"not null"`
 	Groups    []Group    `json:"groups" gorm:"many2many:group_users"`
+	Roles     []Role     `json:"roles" gorm:"many2many:role_users"`
 	CreatedAt time.Time  `json:"createdAt" gorm:"not null;autoCreateTime"`
 	UpdatedAt time.Time  `json:"updatedAt" gorm:"not null;autoUpdateTime"`
 	DeletedAt time.Time  `json:"-" gorm:"default:null"`

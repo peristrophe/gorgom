@@ -33,6 +33,15 @@ const MYPAGE_EXPECT_BODY = `{
             "updatedAt": "0001-01-01T00:00:00Z"
         }
     ],
+    "roles": [
+        {
+            "id": "5f411621-ddd3-4568-a9cb-a6d4e54f6ade",
+            "name": "",
+            "groupId": "4e4d3517-237e-11ee-b7fd-0242ac383802",
+            "createdAt": "0001-01-01T00:00:00Z",
+            "updatedAt": "0001-01-01T00:00:00Z"
+        }
+    ],
     "createdAt": "2023-07-16T00:00:00Z",
     "updatedAt": "2023-07-16T00:00:00Z"
 }`
@@ -43,11 +52,13 @@ func TestUser_MyPage(t *testing.T) {
 
 	date := time.Date(2023, 7, 16, 0, 0, 0, 0, time.UTC)
 	groupID, _ := uuid.Parse("4e4d3517-237e-11ee-b7fd-0242ac383802")
+	roleID, _ := uuid.Parse("5f411621-ddd3-4568-a9cb-a6d4e54f6ade")
 	userID, _ := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
 	userStub := entity.User{
 		ID:        userID,
 		Email:     "hoge@example.com",
 		Groups:    []entity.Group{{ID: groupID}},
+		Roles:     []entity.Role{{ID: roleID, GroupID: groupID}},
 		CreatedAt: date,
 		UpdatedAt: date,
 	}

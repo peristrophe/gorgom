@@ -3,6 +3,7 @@ package repository
 
 import (
 	"gorgom/internal/entity"
+	"sort"
 
 	"github.com/google/uuid"
 )
@@ -37,11 +38,14 @@ func (r *repository) GetUserByID(userID uuid.UUID) (*entity.User, error) {
 	var user entity.User
 	result := r.DB.
 		Preload("Groups").
+		Preload("Roles").
 		Take(&user, userID)
 
 	if result.Error != nil {
 		return nil, result.Error
 	}
+
+	sort.Slice(user.Roles, func(i, j int) bool { return user.Roles[i].GroupID == user.Groups[j].ID })
 	return &user, nil
 }
 

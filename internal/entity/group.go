@@ -20,8 +20,8 @@ type Group struct {
 	DeletedAt    time.Time `json:"-" gorm:"default:null"`
 }
 
+//go:nocover
 func (g *Group) AfterFind(tx *gorm.DB) error {
-	//go:nocover
 	if g.Members != nil {
 		(*g).MemberNum = len((*g).Members)
 	}

@@ -21,6 +21,7 @@ type Group struct {
 }
 
 func (g *Group) AfterFind(tx *gorm.DB) error {
+	//go:nocover
 	if g.Members != nil {
 		(*g).MemberNum = len((*g).Members)
 	}

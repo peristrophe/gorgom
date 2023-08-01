@@ -14,6 +14,9 @@ type Controller interface {
 	SignIn() func(*gin.Context)
 	MyPage() func(*gin.Context)
 
+	GroupDetail() func(*gin.Context)
+	Groups() func(*gin.Context)
+
 	BoardDetail() func(*gin.Context)
 	Boards() func(*gin.Context)
 

@@ -33,6 +33,13 @@ func (r *route) Setup() *gin.Engine {
 			users.GET("/mypage", r.Ctrl.MyPage())
 		}
 
+		groups := v1.Group("/groups")
+		groups.Use(middleware.AuthMiddleware)
+		{
+			groups.GET("", r.Ctrl.Groups())
+			groups.GET("/:groupID", r.Ctrl.GroupDetail())
+		}
+
 		boards := v1.Group("/boards")
 		boards.Use(middleware.AuthMiddleware)
 		{

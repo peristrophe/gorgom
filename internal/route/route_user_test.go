@@ -28,8 +28,9 @@ const MYPAGE_EXPECT_BODY = `{
             "id": "4e4d3517-237e-11ee-b7fd-0242ac383802",
             "name": "",
             "ownerId": "00000000-0000-0000-0000-000000000000",
+            "memberNum": 1,
             "members": null,
-            "roles": null,
+            "definedRoles": null,
             "createdAt": "0001-01-01T00:00:00Z",
             "updatedAt": "0001-01-01T00:00:00Z"
         }
@@ -58,7 +59,7 @@ func TestUser_MyPage(t *testing.T) {
 	userStub := entity.User{
 		ID:        userID,
 		Email:     "hoge@example.com",
-		Groups:    []entity.Group{{ID: groupID}},
+		Groups:    []entity.Group{{ID: groupID, MemberNum: 1}},
 		Roles:     []entity.Role{{ID: roleID, GroupID: groupID}},
 		CreatedAt: date,
 		UpdatedAt: date,

@@ -12,6 +12,7 @@ func (r *repository) GetBoardByID(boardID uuid.UUID) (*entity.Board, error) {
 	result := r.DB.
 		Preload("Boxes.Cards.Comments").
 		Preload("Boxes.Cards.Tags").
+		Preload("DefinedTags").
 		Take(&board, boardID)
 
 	if result.Error != nil {

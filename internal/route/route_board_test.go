@@ -22,6 +22,7 @@ const (
     "title": "hoge",
     "ownerGroupId": "4e4d3517-237e-11ee-b7fd-0242ac383802",
     "boxes": [],
+    "definedTags": [],
     "createdAt": "2023-07-16T00:00:00Z",
     "updatedAt": "2023-07-16T00:00:00Z"
 }`
@@ -30,7 +31,8 @@ const (
         "id": "9a42b6f1-237d-11ee-8a00-0242ac383802",
         "title": "hoge",
         "ownerGroupId": "4e4d3517-237e-11ee-b7fd-0242ac383802",
-        "boxes": [],
+        "boxes": null,
+        "definedTags": null,
         "createdAt": "2023-07-16T00:00:00Z",
         "updatedAt": "2023-07-16T00:00:00Z"
     }
@@ -50,6 +52,7 @@ func TestRoute_BoardDetail(t *testing.T) {
 		Title:        "hoge",
 		OwnerGroupID: groupID,
 		Boxes:        []entity.Box{},
+		DefinedTags:  []entity.Tag{},
 		CreatedAt:    date,
 		UpdatedAt:    date,
 	}
@@ -108,13 +111,14 @@ func TestRoute_Boards(t *testing.T) {
 	boardID, _ := uuid.Parse("9a42b6f1-237d-11ee-8a00-0242ac383802")
 	groupID, _ := uuid.Parse("4e4d3517-237e-11ee-b7fd-0242ac383802")
 	userID, _ := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
-	board := entity.Board{
-		ID:           boardID,
-		Title:        "hoge",
-		OwnerGroupID: groupID,
-		Boxes:        []entity.Box{},
-		CreatedAt:    date,
-		UpdatedAt:    date,
+	boardsStub := []entity.Board{
+		{
+			ID:           boardID,
+			Title:        "hoge",
+			OwnerGroupID: groupID,
+			CreatedAt:    date,
+			UpdatedAt:    date,
+		},
 	}
 	userStub := entity.User{
 		ID:        userID,
@@ -123,8 +127,6 @@ func TestRoute_Boards(t *testing.T) {
 		CreatedAt: date,
 		UpdatedAt: date,
 	}
-	var boardsStub []entity.Board
-	boardsStub = append(boardsStub, board)
 
 	mockRepo := mock.NewMockRepository(mockCtrl)
 	mockRepo.EXPECT().GetUserByID(userID).Return(&userStub, nil)

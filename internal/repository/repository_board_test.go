@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRepository_GetBoardByID(t *testing.T) {
+func TestRepository_ListBoardsByGroupID(t *testing.T) {
 	db, mock, err := helper.ConnectMockDB()
 	if err != nil {
 		panic(err)

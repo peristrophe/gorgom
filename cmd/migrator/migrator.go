@@ -59,9 +59,6 @@ func main() {
 	for _, user := range users {
 		pw := user.Name + user.Name
 		user.SetPassword(pw)
-		//rolesField := make([]entity.Role, 0)
-		//rolesField = append(rolesField, roles[i])
-		//db.Model(&user).Updates(entity.User{Password: user.Password, Groups: groups, Roles: rolesField})
 		db.Model(&user).Updates(entity.User{Password: user.Password})
 	}
 
@@ -71,6 +68,9 @@ func main() {
 		{Name: "festival"},
 		{Name: "trip"},
 	}
+	board := entity.Board{Title: "life", OwnerGroup: groups[0], DefinedTags: tags}
+	db.Create(&board)
+
 	comments := []entity.Comment{
 		{Content: "hello, gorgom!", UserID: users[0].ID},
 		{Content: "good evening", UserID: users[1].ID},
@@ -98,6 +98,5 @@ func main() {
 		{Title: "clothes", Cards: cards[1]},
 		{Title: "house", Cards: cards[2]},
 	}
-	board := entity.Board{Title: "life", OwnerGroup: groups[0], Boxes: boxes}
-	db.Create(&board)
+	db.Model(&board).Updates(entity.Board{Boxes: boxes})
 }

@@ -34,6 +34,16 @@ type signInResponse struct {
 
 type myPageResponse entity.User
 
+type groupDetailRequest struct {
+	GroupID uuid.UUID
+}
+
+type groupDetailResponse entity.Group
+
+//type groupsRequest struct {}
+
+type groupsResponse []entity.Group
+
 //type boardsRequest struct {
 //	GroupID uuid.UUID
 //}
@@ -69,5 +79,15 @@ func NewCardDetailRequest(c *gin.Context) *cardDetailRequest {
 		panic(err)
 	}
 	r := cardDetailRequest{CardID: cardUUID}
+	return &r
+}
+
+func NewGroupDetailRequest(c *gin.Context) *groupDetailRequest {
+	groupID := c.Param("groupID")
+	groupUUID, err := uuid.Parse(groupID)
+	if err != nil {
+		panic(err)
+	}
+	r := groupDetailRequest{GroupID: groupUUID}
 	return &r
 }

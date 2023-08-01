@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	db := repository.GetDBConn()
+	db := repository.ConnectDB()
 
 	db.AutoMigrate(
 		&entity.User{},

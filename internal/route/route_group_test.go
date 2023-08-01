@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorgom/internal/controller"
 	"gorgom/internal/entity"
+	"gorgom/internal/helper"
 	"gorgom/internal/mock"
 	"gorgom/internal/util"
 	"net/http"
@@ -104,7 +105,7 @@ func TestRoute_GroupDetail(t *testing.T) {
 	}
 
 	var us []entity.User
-	util.DeepCopy(&users, &us)
+	helper.DeepCopy(&users, &us)
 	groups[0].Members = []entity.User{us[0]}
 	groups[1].Members = us
 

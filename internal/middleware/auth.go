@@ -13,7 +13,6 @@ func AuthMiddleware(c *gin.Context) {
 	tokenStr, err := c.Cookie("token")
 	if err != nil {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		c.Abort()
 		return
 	}
 
@@ -21,7 +20,6 @@ func AuthMiddleware(c *gin.Context) {
 	userID := token.WhoAmI()
 	if userID == "" {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-		c.Abort()
 		return
 	}
 

@@ -64,13 +64,13 @@ func routeTester(
 	t *testing.T,
 	request *http.Request,
 	handlerName string,
-	stub func(*gin.Context),
+	handlerStub func(*gin.Context),
 	withToken bool,
 ) *httptest.ResponseRecorder {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	r := prepareRouter(mockCtrl, stub, handlerName)
+	r := prepareRouter(mockCtrl, handlerStub, handlerName)
 
 	w := httptest.NewRecorder()
 

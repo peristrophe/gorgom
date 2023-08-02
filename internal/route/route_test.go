@@ -47,7 +47,7 @@ func prepareRouter(
 		rets := rm.Call([]reflect.Value{})
 		ret := rets[0].MethodByName("Return")
 
-		// mockAppCtrl.EXPECT().Handler().Return(func(*gin.Context))
+		// mockAppCtrl.EXPECT().Handler().Return(func(*gin.Context)) ...
 		if tm.Name == handlerName {
 			ret.Call([]reflect.Value{reflect.ValueOf(stub)})
 		} else {
@@ -60,7 +60,7 @@ func prepareRouter(
 	return r
 }
 
-func baseRouteTester(
+func routeTester(
 	t *testing.T,
 	request *http.Request,
 	handlerName string,
@@ -109,7 +109,7 @@ func TestRoute_SignUp(t *testing.T) {
 	reader := strings.NewReader(string(requestBodyBytes))
 	request, _ := http.NewRequest("POST", "/api/v1/signup", reader)
 
-	w := baseRouteTester(t, request, "SignUp", handlerStub, false)
+	w := routeTester(t, request, "SignUp", handlerStub, false)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"email":"hoge@example.com","message":"OK","password":"hogehoge"}`, w.Body.String())
@@ -137,7 +137,7 @@ func TestRoute_SignIn(t *testing.T) {
 	reader := strings.NewReader(string(requestBodyBytes))
 	request, _ := http.NewRequest("POST", "/api/v1/signin", reader)
 
-	w := baseRouteTester(t, request, "SignIn", handlerStub, false)
+	w := routeTester(t, request, "SignIn", handlerStub, false)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"email":"hoge@example.com","message":"OK","password":"hogehoge"}`, w.Body.String())
@@ -157,7 +157,7 @@ func TestRoute_MyPage(t *testing.T) {
 
 	request, _ := http.NewRequest("GET", "/api/v1/users/mypage", nil)
 
-	w := baseRouteTester(t, request, "MyPage", handlerStub, true)
+	w := routeTester(t, request, "MyPage", handlerStub, true)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"message":"OK"}`, w.Body.String())
@@ -177,7 +177,7 @@ func TestRoute_Groups(t *testing.T) {
 
 	request, _ := http.NewRequest("GET", "/api/v1/groups", nil)
 
-	w := baseRouteTester(t, request, "Groups", handlerStub, true)
+	w := routeTester(t, request, "Groups", handlerStub, true)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"message":"OK"}`, w.Body.String())
@@ -198,7 +198,7 @@ func TestRoute_GroupDetail(t *testing.T) {
 
 	request, _ := http.NewRequest("GET", "/api/v1/groups/ABCDEFG", nil)
 
-	w := baseRouteTester(t, request, "GroupDetail", handlerStub, true)
+	w := routeTester(t, request, "GroupDetail", handlerStub, true)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"groupID":"ABCDEFG","message":"OK"}`, w.Body.String())
@@ -218,7 +218,7 @@ func TestRoute_Boards(t *testing.T) {
 
 	request, _ := http.NewRequest("GET", "/api/v1/boards", nil)
 
-	w := baseRouteTester(t, request, "Boards", handlerStub, true)
+	w := routeTester(t, request, "Boards", handlerStub, true)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"message":"OK"}`, w.Body.String())
@@ -239,7 +239,7 @@ func TestRoute_BoardDetail(t *testing.T) {
 
 	request, _ := http.NewRequest("GET", "/api/v1/boards/ABCDEFG", nil)
 
-	w := baseRouteTester(t, request, "BoardDetail", handlerStub, true)
+	w := routeTester(t, request, "BoardDetail", handlerStub, true)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"boardID":"ABCDEFG","message":"OK"}`, w.Body.String())
@@ -260,7 +260,7 @@ func TestRoute_CardDetail(t *testing.T) {
 
 	request, _ := http.NewRequest("GET", "/api/v1/cards/ABCDEFG", nil)
 
-	w := baseRouteTester(t, request, "CardDetail", handlerStub, true)
+	w := routeTester(t, request, "CardDetail", handlerStub, true)
 	assert.True(t, stubCalled)
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, `{"cardID":"ABCDEFG","message":"OK"}`, w.Body.String())

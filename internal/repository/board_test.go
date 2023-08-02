@@ -94,10 +94,10 @@ func TestRepository_GetBoardByID(t *testing.T) {
 		WillReturnRows(boardRows)
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "boxes" WHERE "boxes"."board_id" = $1`)).
 		WithArgs(boardID).
-		WillReturnRows(sqlmock.NewRows([]string{"id"}))
+		WillReturnRows(sqlmock.NewRows([]string{}))
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "tags" WHERE "tags"."board_id" = $1`)).
 		WithArgs(boardID).
-		WillReturnRows(sqlmock.NewRows([]string{"id"}))
+		WillReturnRows(sqlmock.NewRows([]string{}))
 	repo := NewRepository(db)
 
 	board, err := repo.GetBoardByID(boardID)

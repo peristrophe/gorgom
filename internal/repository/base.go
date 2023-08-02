@@ -23,8 +23,13 @@ type repository struct {
 	DB *gorm.DB
 }
 
-func NewRepository() *repository {
-	db := GetDBConn()
+func NewRepository(defaultDB *gorm.DB) *repository {
+	var db *gorm.DB
+	if defaultDB == nil {
+		db = ConnectDB()
+	} else {
+		db = defaultDB
+	}
 	repo := repository{DB: db}
 	return &repo
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	repo := repository.NewRepository()
+	repo := repository.NewRepository(nil)
 	ctrl := controller.NewController(repo)
 	route := route.NewRoute(ctrl)
 	r := route.Setup()

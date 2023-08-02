@@ -29,8 +29,10 @@ jobs:
                 APP_HOST: localhost
               run: |
                   echo "machine github.com login ${{ secrets.GORGOM_ACCESS_TOKEN }}" > ~/.netrc
-                  make test TEST_FLAGS="-v -race -covermode=atomic -coverprofile=cover.out"
+                  make test TEST_FLAGS="-v -race -covermode=atomic -coverprofile=cover.out.tmp"
             - name: Report coverage
               env:
                 COVERALLS_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-              run: goveralls -coverprofile=cover.out -service=github
+              run: |
+                  cat cover.out.tmp | grep -v "gorgom/internal/repository/database.go:" > cover.out
+                  goveralls -coverprofile=cover.out -service=github

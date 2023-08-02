@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	db := repository.GetDBConn()
+	db := repository.ConnectDB()
 
 	db.AutoMigrate(
 		&entity.User{},
@@ -94,9 +94,10 @@ func main() {
 		},
 	}
 	boxes := []entity.Box{
-		{Title: "food", Cards: cards[0]},
-		{Title: "clothes", Cards: cards[1]},
-		{Title: "house", Cards: cards[2]},
+		{Title: "food", BoardID: board.ID, Cards: cards[0]},
+		{Title: "clothes", BoardID: board.ID, Cards: cards[1]},
+		{Title: "house", BoardID: board.ID, Cards: cards[2]},
 	}
+	db.Create(&boxes)
 	db.Model(&board).Updates(entity.Board{Boxes: boxes})
 }

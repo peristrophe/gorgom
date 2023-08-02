@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"gorgom/internal/entity"
 	"gorgom/internal/helper"
 	"regexp"
@@ -57,6 +58,66 @@ func TestRepository_CreateUser(t *testing.T) {
 	}
 
 	assert.Equal(t, expect, *user)
+}
+
+func TestRepository_CreateUser_InsertError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+
+	mock.ExpectBegin()
+	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "users" ("email","password","name","status","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "id","salt","birthday","location","deleted_at"`)).
+		WithArgs().
+		WillReturnError(fmt.Errorf("Insert failed."))
+	mock.ExpectRollback()
+
+	repo := NewRepository(db)
+
+	_, err = repo.CreateUser("hoge@example.com", "hogehoge")
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestRepository_CreateUser_UpdateError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+	rows := sqlmock.NewRows([]string{
+		"id",
+		"salt",
+		"birthday",
+		"location",
+		"deleted_at",
+	}).AddRow(
+		"5b4ccb43-81ab-4357-8591-95b42d42e339",
+		"db00dc13-8698-4a80-9779-76107a82da00",
+		nil,
+		"",
+		nil,
+	)
+
+	mock.ExpectBegin()
+	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "users" ("email","password","name","status","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "id","salt","birthday","location","deleted_at"`)).
+		WithArgs().
+		WillReturnRows(rows)
+	mock.ExpectExec(regexp.QuoteMeta(`UPDATE "users" SET "password"=$1,"updated_at"=$2 WHERE "id" = $3`)).
+		WithArgs().
+		WillReturnError(fmt.Errorf("Update failed."))
+	mock.ExpectRollback()
+
+	repo := NewRepository(db)
+
+	_, err = repo.CreateUser("hoge@example.com", "hogehoge")
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestRepository_GetUserByID(t *testing.T) {
@@ -132,6 +193,27 @@ func TestRepository_GetUserByID(t *testing.T) {
 	assert.Equal(t, expect, *user)
 }
 
+func TestRepository_GetUserByID_SelectError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+	userID, _ := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
+
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE "users"."id" = $1 LIMIT 1`)).
+		WithArgs(userID).
+		WillReturnError(fmt.Errorf("Select failed."))
+
+	repo := NewRepository(db)
+
+	_, err = repo.GetUserByID(userID)
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestRepository_GetUserByEmail(t *testing.T) {
 	db, mock, err := helper.ConnectMockDB()
 	if err != nil {
@@ -197,4 +279,24 @@ func TestRepository_GetUserByEmail(t *testing.T) {
 	expect.SetPassword("hogehoge")
 
 	assert.Equal(t, expect, *user)
+}
+
+func TestRepository_GetUserByEmail_SelectError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE email = $1 ORDER BY "users"."id" LIMIT 1`)).
+		WithArgs("hoge@example.com").
+		WillReturnError(fmt.Errorf("Select failed."))
+
+	repo := NewRepository(db)
+
+	_, err = repo.GetUserByEmail("hoge@example.com")
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
 }

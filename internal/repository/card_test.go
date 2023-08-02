@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"gorgom/internal/entity"
 	"gorgom/internal/helper"
 	"regexp"
@@ -74,4 +75,24 @@ func TestRepository_GetCardByID(t *testing.T) {
 	}
 
 	assert.Equal(t, expect, *card)
+}
+
+func TestRepository_GetCardByID_SelectError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+	cardID, _ := uuid.Parse("250013d6-6298-4572-932f-ab46dbab0b2c")
+
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "cards" WHERE "cards"."id" = $1 LIMIT 1`)).
+		WithArgs(cardID).
+		WillReturnError(fmt.Errorf("Select failed."))
+	repo := NewRepository(db)
+
+	_, err = repo.GetCardByID(cardID)
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
 }

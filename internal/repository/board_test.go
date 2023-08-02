@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"gorgom/internal/entity"
 	"gorgom/internal/helper"
 	"regexp"
@@ -64,6 +65,26 @@ func TestRepository_ListBoardsByGroupID(t *testing.T) {
 	assert.Equal(t, expect, boards)
 }
 
+func TestRepository_ListBoardsByGroupID_SelectError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+	groupID, _ := uuid.Parse("40f0e6f9-cc36-49aa-9c73-856c34bcc915")
+
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "boards" WHERE owner_group_id = $1`)).
+		WithArgs(groupID).
+		WillReturnError(fmt.Errorf("Select failed."))
+	repo := NewRepository(db)
+
+	_, err = repo.ListBoardsByGroupID(groupID)
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestRepository_GetBoardByID(t *testing.T) {
 	db, mock, err := helper.ConnectMockDB()
 	if err != nil {
@@ -120,4 +141,24 @@ func TestRepository_GetBoardByID(t *testing.T) {
 	}
 
 	assert.Equal(t, expect, *board)
+}
+
+func TestRepository_GetBoardByID_SelectError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+	boardID, _ := uuid.Parse("cc6ede1a-c2dc-43e3-a992-ffd8a610be92")
+
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "boards" WHERE "boards"."id" = $1 LIMIT 1`)).
+		WithArgs(boardID).
+		WillReturnError(fmt.Errorf("Select failed."))
+	repo := NewRepository(db)
+
+	_, err = repo.GetBoardByID(boardID)
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
 }

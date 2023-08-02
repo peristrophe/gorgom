@@ -16,16 +16,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	NO_PARAM_API_EXPECT_BODY = `{
-    "message": "OK"
-}`
-	BOARD_DETAIL_EXPECT_BODY = `{
-    "boardID": "ABCDEFG",
-    "message": "OK"
-}`
-)
-
 func prepareRouter(
 	mc *gomock.Controller,
 	stub func(*gin.Context),

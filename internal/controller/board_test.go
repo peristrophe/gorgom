@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"gorgom/internal/entity"
-	"gorgom/internal/middleware"
 	"gorgom/internal/mock"
 	"net/http"
 	"net/http/httptest"
@@ -17,7 +16,6 @@ import (
 )
 
 const (
-	TESTING_USER_ID          = "5b4ccb43-81ab-4357-8591-95b42d42e339"
 	BOARD_DETAIL_EXPECT_BODY = `{
     "id": "cc6ede1a-c2dc-43e3-a992-ffd8a610be92",
     "title": "foo",
@@ -48,11 +46,6 @@ const (
     }
 ]`
 )
-
-func middlewareStub(c *gin.Context) {
-	c.AddParam(middleware.CONTEXT_PARAM_KEY_AUTH_USER_ID, TESTING_USER_ID)
-	c.Next()
-}
 
 func TestController_BoardDetail(t *testing.T) {
 	mockCtrl := gomock.NewController(t)

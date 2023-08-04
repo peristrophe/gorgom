@@ -15,9 +15,21 @@ func TestUser_SetPassword(t *testing.T) {
 		Name:     "hoge",
 		Location: "Tokyo",
 	}
-	user.SetPassword("hogehoge")
+	err := user.SetPassword("hogehoge")
 	// depends on env.TOKEN_SECRET_KEY
+	assert.NoError(t, err)
 	assert.Equal(t, "acacb4ae4d947ca15ee0952adaf908012a426e073e413c10285fa412f3135eb3", string(user.Password))
+}
+
+func TestUser_SetPassword_Error(t *testing.T) {
+	user := User{
+		Email:    "hoge@example.com",
+		Name:     "hoge",
+		Location: "Tokyo",
+	}
+	err := user.SetPassword("hogehoge")
+	assert.Error(t, err)
+	assert.Equal(t, "", string(user.Password))
 }
 
 func TestUser_Authentication(t *testing.T) {

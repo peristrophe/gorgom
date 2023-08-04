@@ -241,3 +241,24 @@ func TestController_MyPage(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 }
+
+func TestController_MyPage_AuthError(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	userID, _ := uuid.Parse(TESTING_USER_ID)
+
+	mockAppRepo := mock.NewMockRepository(mockCtrl)
+	mockAppRepo.EXPECT().GetUserByID(userID).Return(nil, fmt.Errorf("Unauthorized."))
+	appCtrl := NewController(mockAppRepo)
+
+	r := gin.Default()
+	r.Use(middlewareStub)
+	r.GET("/api/v1/users/mypage", appCtrl.MyPage())
+
+	request, _ := http.NewRequest("GET", "/api/v1/users/mypage", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, request)
+
+	assert.Equal(t, 500, w.Code)
+}

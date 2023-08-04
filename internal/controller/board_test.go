@@ -122,7 +122,7 @@ func TestController_BoardDetail_AuthError(t *testing.T) {
 	assert.Equal(t, "{\n    \"error\": \"Unauthorized.\"\n}", w.Body.String())
 }
 
-func TestController_BoardDetail_BoardFetchError(t *testing.T) {
+func TestController_BoardDetail_FetchError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
@@ -158,7 +158,7 @@ func TestController_BoardDetail_BoardFetchError(t *testing.T) {
 	assert.Equal(t, "{\n    \"error\": \"Board fetch failed.\"\n}", w.Body.String())
 }
 
-func TestController_BoardDetail_BoardNotFound(t *testing.T) {
+func TestController_BoardDetail_NotFound(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
@@ -253,4 +253,60 @@ func TestController_Boards(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, BOARDS_EXPECT_BODY, w.Body.String())
+}
+
+func TestController_Boards_AuthError(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	userID, _ := uuid.Parse(TESTING_USER_ID)
+
+	mockAppRepo := mock.NewMockRepository(mockCtrl)
+	mockAppRepo.EXPECT().GetUserByID(userID).Return(nil, fmt.Errorf("Unauthorized."))
+	appCtrl := NewController(mockAppRepo)
+
+	r := gin.Default()
+	r.Use(middlewareStub)
+	r.GET("/api/v1/boards", appCtrl.Boards())
+
+	request, _ := http.NewRequest("GET", "/api/v1/boards", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, request)
+
+	assert.Equal(t, 500, w.Code)
+	assert.Equal(t, "{\n    \"error\": \"Unauthorized.\"\n}", w.Body.String())
+}
+
+func TestController_Boards_FetchError(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	date := time.Date(2023, 7, 16, 0, 0, 0, 0, time.UTC)
+
+	userID, _ := uuid.Parse(TESTING_USER_ID)
+	groupID, _ := uuid.Parse("40f0e6f9-cc36-49aa-9c73-856c34bcc915")
+	userStub := entity.User{
+		ID:        userID,
+		Email:     "hoge@example.com",
+		Name:      "hoge",
+		Groups:    []entity.Group{{ID: groupID}},
+		CreatedAt: date,
+		UpdatedAt: date,
+	}
+
+	mockAppRepo := mock.NewMockRepository(mockCtrl)
+	mockAppRepo.EXPECT().GetUserByID(userID).Return(&userStub, nil)
+	mockAppRepo.EXPECT().ListBoardsByGroupID(groupID).Return(nil, fmt.Errorf("Boards fetch failed."))
+	appCtrl := NewController(mockAppRepo)
+
+	r := gin.Default()
+	r.Use(middlewareStub)
+	r.GET("/api/v1/boards", appCtrl.Boards())
+
+	request, _ := http.NewRequest("GET", "/api/v1/boards", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, request)
+
+	assert.Equal(t, 500, w.Code)
+	assert.Equal(t, "{\n    \"error\": \"Boards fetch failed.\"\n}", w.Body.String())
 }

@@ -82,6 +82,36 @@ func TestRepository_CreateUser_InsertError(t *testing.T) {
 	}
 }
 
+func TestRepository_CreateUser_SetPasswordError(t *testing.T) {
+	db, mock, err := helper.ConnectMockDB()
+	if err != nil {
+		panic(err)
+	}
+	userID, _ := uuid.Parse("5b4ccb43-81ab-4357-8591-95b42d42e339")
+	rows := sqlmock.NewRows([]string{
+		"id",
+		"salt",
+		"birthday",
+		"location",
+		"deleted_at",
+	}).AddRow(userID, uuid.Nil, nil, "", nil)
+
+	mock.ExpectBegin()
+	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "users" ("email","password","name","status","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "id","salt","birthday","location","deleted_at"`)).
+		WithArgs().
+		WillReturnRows(rows)
+	mock.ExpectRollback()
+
+	repo := NewRepository(db)
+
+	_, err = repo.CreateUser("hoge@example.com", "hogehoge")
+	assert.Error(t, err)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestRepository_CreateUser_UpdateError(t *testing.T) {
 	db, mock, err := helper.ConnectMockDB()
 	if err != nil {

@@ -131,3 +131,48 @@ func TestController_CardDetail_FetchError(t *testing.T) {
 	assert.Equal(t, 500, w.Code)
 	assert.Equal(t, "{\n    \"error\": \"Card fetch failed.\"\n}", w.Body.String())
 }
+
+func TestController_CardDetail_NotFound(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	date := time.Date(2023, 7, 16, 0, 0, 0, 0, time.UTC)
+
+	userID, _ := uuid.Parse(TESTING_USER_ID)
+	groupID, _ := uuid.Parse("40f0e6f9-cc36-49aa-9c73-856c34bcc915")
+	userStub := entity.User{
+		ID:        userID,
+		Email:     "hoge@example.com",
+		Name:      "hoge",
+		Groups:    []entity.Group{},
+		CreatedAt: date,
+		UpdatedAt: date,
+	}
+
+	cardID, _ := uuid.Parse("250013d6-6298-4572-932f-ab46dbab0b2c")
+	cardStub := entity.Card{
+		ID:          cardID,
+		Title:       "foo",
+		Description: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		Box:         entity.Box{Board: entity.Board{OwnerGroupID: groupID}},
+		CreatedAt:   date,
+		UpdatedAt:   date,
+	}
+
+	mockAppRepo := mock.NewMockRepository(mockCtrl)
+	mockAppRepo.EXPECT().GetUserByID(userID).Return(&userStub, nil)
+	mockAppRepo.EXPECT().GetCardByID(cardID).Return(&cardStub, nil)
+	appCtrl := NewController(mockAppRepo)
+
+	r := gin.Default()
+	r.Use(middlewareStub)
+	r.GET("/api/v1/cards/:cardID", appCtrl.CardDetail())
+
+	endpoint := fmt.Sprintf("/api/v1/cards/%s", cardID.String())
+	request, _ := http.NewRequest("GET", endpoint, nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, request)
+
+	assert.Equal(t, 404, w.Code)
+	assert.Equal(t, "{\n    \"error\": \"Card not found.\"\n}", w.Body.String())
+}

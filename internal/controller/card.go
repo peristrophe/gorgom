@@ -24,7 +24,7 @@ func (ctrl *controller) CardDetail() func(*gin.Context) {
 		}
 
 		if !slices.Contains(user.ListGroupIDs(), card.Box.Board.OwnerGroupID) {
-			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "card not found."})
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Card not found."})
 			return
 		}
 

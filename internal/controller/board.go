@@ -25,7 +25,7 @@ func (ctrl *controller) BoardDetail() func(*gin.Context) {
 		}
 
 		if !slices.Contains(user.ListGroupIDs(), board.OwnerGroupID) {
-			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "board not found."})
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Board not found."})
 			return
 		}
 

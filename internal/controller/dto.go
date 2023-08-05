@@ -66,7 +66,7 @@ func NewBoardDetailRequest(c *gin.Context) *boardDetailRequest {
 	boardID := c.Param("boardID")
 	boardUUID, err := uuid.Parse(boardID)
 	if err != nil {
-		panic(err)
+		return nil
 	}
 	r := boardDetailRequest{BoardID: boardUUID}
 	return &r
@@ -76,7 +76,7 @@ func NewCardDetailRequest(c *gin.Context) *cardDetailRequest {
 	cardID := c.Param("cardID")
 	cardUUID, err := uuid.Parse(cardID)
 	if err != nil {
-		panic(err)
+		return nil
 	}
 	r := cardDetailRequest{CardID: cardUUID}
 	return &r
@@ -86,7 +86,7 @@ func NewGroupDetailRequest(c *gin.Context) *groupDetailRequest {
 	groupID := c.Param("groupID")
 	groupUUID, err := uuid.Parse(groupID)
 	if err != nil {
-		panic(err)
+		return nil
 	}
 	r := groupDetailRequest{GroupID: groupUUID}
 	return &r

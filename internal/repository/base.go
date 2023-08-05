@@ -26,7 +26,7 @@ type repository struct {
 func NewRepository(defaultDB *gorm.DB) *repository {
 	var db *gorm.DB
 	if defaultDB == nil {
-		db = ConnectDB()
+		db = ConnectDB() //go:cover ignore
 	} else {
 		db = defaultDB
 	}

@@ -8,7 +8,6 @@ import (
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/pbkdf2"
-	"golang.org/x/exp/slices"
 )
 
 type UserStatus int
@@ -74,8 +73,9 @@ func (u *User) ListGroupIDs() []uuid.UUID {
 }
 
 func (u *User) IsValid() bool {
-	for _, role := range u.Roles {
-		if !slices.Contains(u.ListGroupIDs(), role.GroupID) {
+	gidList := u.ListGroupIDs()
+	for i, role := range u.Roles {
+		if gidList[i] != role.GroupID {
 			return false
 		}
 	}
